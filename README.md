@@ -25,7 +25,7 @@ $ npm install jixi --save
 Evoke in js ES6 module:
 ```js
 
-import { createApp, utils, scaler, nav, ui, Btn } from '../jixi/jixi.js';
+import { createApp, utils, scaler, nav, ui, Btn } from require('jixi');
 
 // Nav
 
