@@ -1,0 +1,29 @@
+{
+  "name": "jixi",
+  "version": "0.1.1",
+  "description": "Front end JS library that extends PixiJS HTML5 WebGL Engine for making web games.",
+  "main": "jixi.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loksland/jixi.git"
+  },
+  "keywords": [
+    "webgl",
+    "pixi",
+    "game",
+    "engine",
+    "game"
+  ],
+  "author": "loksland",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loksland/jixi/issues"
+  },
+  "homepage": "https://github.com/loksland/jixi#readme",
+  "devDependencies": {
+    "object-assign-deep": "^0.4.0"
+  }
+}
