@@ -4,7 +4,7 @@ UNDER DEVELOPMENT
 ```
 # jixi
 
-`jixi` is an ES6 JS library adding extended functionality to the amazing [PixiJS HTML5 Web Engine](https://www.pixijs.com/) for making games.
+`jixi` is a lightweight game engine for [PixiJS](https://www.pixijs.com/) featuring responsive layout, scenes, sprites, camera, transitions and PSD exporting.
 
 Primary features include:
 
@@ -95,7 +95,7 @@ createApp(utils.e('game'), true, 1.0, () => {
 **Also:**
 - Webpack (v5)
 - Photoshop 2020
-- [Choppy PSD publishing library](https://www.npmjs.com/package/choppy)
+- [Choppy - command line PSD publishing utility](https://www.npmjs.com/package/choppy)
 
 ### Release History 
 
