@@ -74,7 +74,7 @@ scaler.configureArtboard(artboardDims, artboardScaleFactor, artboardProjectionPa
 // Kick off
 
 createApp(utils.e('game'), true, 1.0, () => {  
-  TweenMax.to(utils.e('spinner'), 0.4, {alpha:0.0, ease:Linear.easeNone, onComplete:function(){
+  gsap.to(utils.e('spinner'), 0.4, {alpha:0.0, ease:Linear.easeNone, onComplete:function(){
     utils.e('spinner').remove();
   }});
 });
