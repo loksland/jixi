@@ -56,8 +56,8 @@ function setupStage(stage, bgAlpha){
 
 function onResizeImmediate(_stageW,_stageH){
   
-  bg.width = _scaler.stageW;
-  bg.height = _scaler.stageH;
+  bg.width = _stageW;
+  bg.height = _stageH;
   
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "jixi",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "UNDER DEVELOPMENT Lightweight game engine for PixiJS featuring responsive layout, scenes, sprites, camera, transitions and PSD exporting.",
   "main": "jixi.js",
   "scripts": {

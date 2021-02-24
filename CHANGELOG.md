@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.1.11 - (24-02-2021) Removing stage dim refs
 - v1.1.10 - (24-02-2021) Removing stage dim refs
 - v1.1.9 - (24-02-2021) Removing shorthand stage dims access
 - v1.1.8 - (24-02-2021) Removed stage refs from main module
