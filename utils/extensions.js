@@ -1,4 +1,4 @@
-import { stageW, stageH, utils } from './../jixi.js';
+import { utils } from './../jixi.js';
  
 // Extensions
 // ----------

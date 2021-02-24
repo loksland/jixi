@@ -1,4 +1,4 @@
-import {stageW, stageH, Camera} from './../jixi.js';
+import { scaler, Camera} from './../jixi.js';
 
 
 export default class Scene extends PIXI.Container {
@@ -31,8 +31,8 @@ export default class Scene extends PIXI.Container {
     // Prevent tapping on scenes below
     const inputScreen = new Sprite(PIXI.Texture.EMPTY);﻿
     inputScreen.interactive = true;
-    inputScreen.width = stageW;
-    inputScreen.height = stageH;
+    inputScreen.width = scaler.stageW;
+    inputScreen.height = scaler.stageH;
     this.addChild(inputScreen);
     
   }
@@ -46,7 +46,7 @@ export default class Scene extends PIXI.Container {
   // Overwrite to customise Mario transitions.
   
   getMarioTransPt(forArrive){
-    return new Point(stageW*0.5, stageH*0.5);
+    return new Point(scaler.stageW*0.5, scaler.stageH*0.5);
   }
   
   // Return 0.0 for none

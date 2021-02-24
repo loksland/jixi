@@ -1,4 +1,4 @@
-import { stageW,stageH,nav } from './../../jixi/jixi.js';
+import { nav,scaler } from './../../jixi/jixi.js';
 
 export const id = 'over';
 
@@ -38,8 +38,8 @@ export default class OverTrans {
     this.scene.filters = [filterIn];
     gsap.to(filterIn, dur, {pixi:{alpha:1.0}, ease:Linear.easeNone});
     
-    this.scene.position.set(stageW*0.5, stageH*0.5)
-    this.scene.pivot.set(stageW*0.5, stageH*0.5)
+    this.scene.position.set(scaler.stageW*0.5, scaler.stageH*0.5)
+    this.scene.pivot.set(scaler.stageW*0.5, scaler.stageH*0.5)
     gsap.from(this.scene, dur, {pixi: {scale: 1.3, blur:this.maxBlur} , ease:Power3.easeOut, onComplete:this.onIn.bind(this), onCompleteParams: [onInCallback]});
     
   }
@@ -63,8 +63,8 @@ export default class OverTrans {
     
     let dur = 0.4;
     
-    this.scene.position.set(stageW*0.5, stageH*0.5)
-    this.scene.pivot.set(stageW*0.5, stageH*0.5)
+    this.scene.position.set(scaler.stageW*0.5, scaler.stageH*0.5)
+    this.scene.pivot.set(scaler.stageW*0.5, scaler.stageH*0.5)
     
     const filterOut = new PIXI.filters.AlphaFilter(1.0);
     this.scene.filters = [filterOut];

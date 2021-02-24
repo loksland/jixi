@@ -1,4 +1,4 @@
-import { stageW,stageH,nav,config } from './../../jixi/jixi.js';
+import { scaler,nav,config } from './../../jixi/jixi.js';
 
 export const id = 'mario';
 
@@ -43,23 +43,23 @@ export default class MarioTrans {
     
     sceneIn.visible = false;
 
-    this.maxRad = Math.sqrt(Math.pow(stageW,2)+Math.pow(stageH,2))*0.5;
+    this.maxRad = Math.sqrt(Math.pow(scaler.stageW,2)+Math.pow(scaler.stageH,2))*0.5;
 
     this.posIn = sceneIn.getMarioTransPt(false)
-    this.posOut = sceneOut ? sceneOut.getMarioTransPt(true) : new PIXI.Point(stageW*0.5, stageH*0.5); 
+    this.posOut = sceneOut ? sceneOut.getMarioTransPt(true) : new PIXI.Point(scaler.stageW*0.5, scaler.stageH*0.5); 
 
     this.focusRadIn = sceneIn.getMarioTransFocusRad(false)
     this.focusRadOut = sceneOut ? sceneOut.getMarioTransFocusRad(true) : 100.0;
 
     this.screen = new PIXI.Graphics()
-    this.screen.x = stageW*0.5-this.maxRad;
-    this.screen.y = stageH*0.5-this.maxRad;
+    this.screen.x = scaler.stageW*0.5-this.maxRad;
+    this.screen.y = scaler.stageH*0.5-this.maxRad;
 
     nav.sceneHolder.parent.addChildAt(this.screen, nav.sceneHolder.parent.getChildIndex(nav.sceneHolder)+1)
 
     this.props = {};
-    this.props.posX = stageW*0.5;
-    this.props.posY = stageH*0.5;
+    this.props.posX = scaler.stageW*0.5;
+    this.props.posY = scaler.stageH*0.5;
     this.props.rad = this.maxRad; // this.maxRad
 
     const dur = this.focusRadIn != 0 ? this.dur*(1.0-this.focusDurPerc) : this.dur;
@@ -78,7 +78,7 @@ export default class MarioTrans {
       
     if (this.props.rad > 1.0){
       this.screen.beginHole()
-        .drawCircle(this.maxRad - stageW*0.5 + this.props.posX, this.maxRad - stageH*0.5 + this.props.posY, Math.max(this.props.rad, 1.0))
+        .drawCircle(this.maxRad - scaler.stageW*0.5 + this.props.posX, this.maxRad - scaler.stageH*0.5 + this.props.posY, Math.max(this.props.rad, 1.0))
         .endHole()
     }
     
@@ -116,8 +116,8 @@ export default class MarioTrans {
     let tw = {rad:rad, ease:ease, delay:this.midwayDelay, onUpdate:this.render.bind(this), onComplete:onCompleteFn.bind(this), onCompleteParams:[onInCallback,reverse]}
     
     if (this.focusRadOut == 0){
-      tw.posX = stageW*0.5;
-      tw.posY = stageH*0.5;      
+      tw.posX = scaler.stageW*0.5;
+      tw.posY = scaler.stageH*0.5;      
     }
         
     TweenMax.to(this.props, dur, tw);
@@ -126,7 +126,7 @@ export default class MarioTrans {
   
   on2QuarterWay(onInCallback, reverse = false){
     
-    TweenMax.to(this.props, this.dur*(1.0-this.focusDurPerc), {rad:this.maxRad, posX:stageW*0.5, posY:stageH*0.5, ease:Power3.easeIn, delay:this.focusDelay, onUpdate:this.render.bind(this), onComplete:this.onIn.bind(this), onCompleteParams:[onInCallback,reverse]});
+    TweenMax.to(this.props, this.dur*(1.0-this.focusDurPerc), {rad:this.maxRad, posX:scaler.stageW*0.5, posY:scaler.stageH*0.5, ease:Power3.easeIn, delay:this.focusDelay, onUpdate:this.render.bind(this), onComplete:this.onIn.bind(this), onCompleteParams:[onInCallback,reverse]});
     
   }
   

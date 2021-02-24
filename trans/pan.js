@@ -1,4 +1,4 @@
-import { stageW,stageH,nav } from './../../jixi/jixi.js';
+import { scaler,nav } from './../../jixi/jixi.js';
 
 export const id = ['pan','parallax'];
 
@@ -54,15 +54,15 @@ class PanTrans {
   performIn(onInCallback){
     
     this.scene.visible = true;
-    this.scene.x = stageW * this.dir.x 
-    this.scene.y = stageH * this.dir.y
+    this.scene.x = scaler.stageW * this.dir.x 
+    this.scene.y = scaler.stageH * this.dir.y
     
     if (!nav.isScenePresentedWithTransparentBg()){
       TweenMax.to(nav.bg, this.dur, {pixi: {tint:this.scene.bgColor}, ease:Linear.easeNone});
     }
     
     if (this.scenePrev){
-      TweenMax.to(this.scenePrev, this.dur, {pixi: {x: stageW * -this.dir.x, y: stageH * -this.dir.y}, ease:Power3.easeInOut});
+      TweenMax.to(this.scenePrev, this.dur, {pixi: {x: scaler.stageW * -this.dir.x, y: scaler.stageH * -this.dir.y}, ease:Power3.easeInOut});
     }
     var tw = {pixi: {x: 0.0, y: 0.0}, ease:Power3.easeInOut, onComplete: this.onIn.bind(this), onCompleteParams: [onInCallback]};
     
@@ -102,8 +102,8 @@ class PanTrans {
     
     for (const scene of scenes){
       
-      const percX = scene.x/stageW;
-      const percY = scene.y/stageH;
+      const percX = scene.x/scaler.stageW;
+      const percY = scene.y/scaler.stageH;
       
       for (const dispo of scene.children){
         if (dispo.txInfo){
@@ -143,12 +143,12 @@ class PanTrans {
   performOut(onOutCallback){
     
     this.scenePrev.visible = true;
-    this.scenePrev.x = stageW * this.dir.x * -1.0;
-    this.scenePrev.y = stageH * this.dir.y * -1.0;
+    this.scenePrev.x = scaler.stageW * this.dir.x * -1.0;
+    this.scenePrev.y = scaler.stageH * this.dir.y * -1.0;
     
     TweenMax.to(nav.bg, this.dur, {pixi: {tint:this.scenePrev.bgColor}, ease:Linear.easeNone});
     
-    TweenMax.to(this.scene, this.dur, {pixi: {x: stageW * -this.dir.x * -1.0, y: stageH * -this.dir.y * -1.0}, ease:Power3.easeInOut});
+    TweenMax.to(this.scene, this.dur, {pixi: {x: scaler.stageW * -this.dir.x * -1.0, y: scaler.stageH * -this.dir.y * -1.0}, ease:Power3.easeInOut});
     
     var tw = {pixi: {x: 0.0, y: 0.0}, ease:Power3.easeInOut, onComplete: this.onOut.bind(this), onCompleteParams: [onOutCallback]}
     if (this.isParallax){

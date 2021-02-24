@@ -2,7 +2,7 @@
 // --------------
 // - Projection / scale aware extensions of Pixi display object classes
 
-import { Scene, Btn, scaler, Camera, utils, stageW, stageH } from './../jixi.js';
+import { Scene, Btn, scaler, Camera, utils } from './../jixi.js';
 
 let fontMapping; // Lookup PSD font to get pixi (css) font family list 
 let googleFontFamilies;
@@ -478,7 +478,7 @@ PIXI.DisplayObject.prototype.hug = function(hugStr){
   
   const hugAlign = utils.alignmentStringToXY(hugStr, true); // Result may have null for undefined
   
-  const hugBounds = {width:stageW, height:stageH}; // May be extended for artboard in future
+  const hugBounds = {width:scaler.stageW, height:scaler.stageH}; // May be extended for artboard in future
   const retainLayoutPadding = true;
   const applyProjScaleToPadding = false;
     

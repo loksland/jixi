@@ -1,4 +1,4 @@
-import { stageW, stageH } from './../jixi.js';
+import { scaler } from './../jixi.js';
 
 // Eg. if set to 0.5 then will try to keep trackees within
 // 0.5 of camera dims. 
@@ -30,7 +30,7 @@ export default class Camera extends PIXI.Container {
       this.psdID = psdID;      
       this.tickBound = this.tick.bind(this);      
       
-      this.dims = {width:stageW,height:stageH}
+      this.dims = {width:scaler.stageW,height:scaler.stageH}
       this.centerPt = new Point(this.dims.width*0.5, this.dims.height*0.5); // Where to aim camera 
       
       // Whether camera is allowed to temporarily pop out of visual limits
@@ -310,17 +310,17 @@ export default class Camera extends PIXI.Container {
         
         if (p.loopX){
           if (this.x + p._centerOffset.x + p.dispo.x < -p.dispo.width*0.5){
-            p.dispo.x += stageW + p.dispo.width*2.0;
-          } else if (this.x + p._centerOffset.x + p.dispo.x > stageW + p.dispo.width*0.5){
-            p.dispo.x -= stageW + p.dispo.width*2.0;
+            p.dispo.x += scaler.stageW + p.dispo.width*2.0;
+          } else if (this.x + p._centerOffset.x + p.dispo.x > scaler.stageW + p.dispo.width*0.5){
+            p.dispo.x -= scaler.stageW + p.dispo.width*2.0;
           }
         }
         
         if (p.loopY){
           if (this.y + p._centerOffset.y + p.dispo.y < -p.dispo.height*0.5){
-            p.dispo.y += stageH + p.dispo.height*2.0;
-          } else if (this.y + p._centerOffset.y + p.dispo.y > stageH + p.dispo.height*0.5){
-            p.dispo.y -= stageH + p.dispo.height*2.0;
+            p.dispo.y += scaler.stageH + p.dispo.height*2.0;
+          } else if (this.y + p._centerOffset.y + p.dispo.y > scaler.stageH + p.dispo.height*0.5){
+            p.dispo.y -= scaler.stageH + p.dispo.height*2.0;
           }
         }
         

@@ -1,5 +1,5 @@
 
-import { stageW,stageH,utils,scaler } from './../jixi.js';
+import { utils,scaler } from './../jixi.js';
 
 let locked = false; // Nav is locked
 let transStack = [];
@@ -30,8 +30,8 @@ function setupStage(stage, bgAlpha){
   
   // Add background 
   bg = new PIXI.Sprite(PIXI.Texture.WHITE);﻿
-  bg.width = stageW;
-  bg.height = stageH;
+  bg.width = scaler.stageW;
+  bg.height = scaler.stageH;
   bg.tint = 0x000000; // Set in the index css
   stage.addChild(bg);
   gsap.fromTo(bg, 0.6, {pixi:{alpha:0.0}},{pixi:{alpha:bgAlpha}, ease:Linear.easeNone})
@@ -43,8 +43,8 @@ function setupStage(stage, bgAlpha){
   
   inputScreen = new PIXI.Sprite(PIXI.Texture.EMPTY);﻿
   inputScreen.interactive = true;
-  inputScreen.width = stageW;
-  inputScreen.height = stageH;
+  inputScreen.width = scaler.stageW;
+  inputScreen.height = scaler.stageH;
   //inputScreen.cursor = 'auto' 'not-allowed';
   stage.addChild(inputScreen);
   inputScreen.visible = false;
@@ -54,10 +54,10 @@ function setupStage(stage, bgAlpha){
   
 }
 
-function onResizeImmediate(_stageW,_stageH){
+function onResizeImmediate(_scaler.stageW,_scaler.stageH){
   
-  bg.width = _stageW;
-  bg.height = _stageH;
+  bg.width = _scaler.stageW;
+  bg.height = _scaler.stageH;
   
 }
 
