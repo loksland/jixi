@@ -115,7 +115,7 @@ window.keyCodes = keyCodes;
 
 // Ref: https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export
 
-export {stageW, stageH} from './core/scaler.js'; // Convenience alias
+// export {stageW, stageH} from './core/scaler.js'; // Convenience alias
 export {app};
 export {Scene, Camera, Btn}; // Classes
 export {utils, nav, ui, scaler}; // Core 
