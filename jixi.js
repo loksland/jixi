@@ -29,7 +29,6 @@ let htmlEle; // The element containing the game
 //let stageW = 0; // Stage dims 
 //let stageH = 0; // Stage dims 
 
-
 export function createApp(_htmlEle, fullScreen = false, bgAlpha = 1.0, onLoadCallback = null) {
   
     htmlEle = _htmlEle;
