@@ -1,6 +1,8 @@
 
 import { utils,scaler } from './../jixi.js';
 
+//import AlphaFilter from './../filters/alphafilter.js';
+
 let locked = false; // Nav is locked
 let transStack = [];
 let pendingModalTrans = null;
@@ -13,7 +15,7 @@ let scenes;
 // Load all transitions
 let trans = {};
 const _trans = utils.requireAll(require.context('./../trans', false, /.js$/));
-for (var transMod of _trans) {
+for (let transMod of _trans) {
   if (transMod.id){
     let ids = Array.isArray(transMod.id) ? transMod.id : [transMod.id];
     for (var id of ids) {
@@ -38,6 +40,7 @@ function setupStage(stage, bgAlpha){
   
   // Create a container for scenes
   sceneHolder = new Container();  
+  
   // stage.filters = [new PIXI.filters.CrossHatchFilter()]; // new PIXI.filters.TiltShiftFilter(27, 1000)]; //[new PIXI.filters.CRTFilter()]
   stage.addChild(sceneHolder);
   
@@ -46,6 +49,11 @@ function setupStage(stage, bgAlpha){
   inputScreen.width = scaler.stageW;
   inputScreen.height = scaler.stageH;
   //inputScreen.cursor = 'auto' 'not-allowed';
+  
+  //var alphaFilter = new AlphaFilter();
+  //alphaFilter.alpha = 0.5;
+  //sceneHolder.filters = [alphaFilter];
+  
   stage.addChild(inputScreen);
   inputScreen.visible = false;
   
@@ -61,9 +69,9 @@ function onResizeImmediate(_stageW,_stageH){
   
 }
 
-function onResize(){
+function onResize(stageW,stageH){
   
-  reloadCurrentScene();
+  reloadSceneStack();
   
 }
 
@@ -253,30 +261,36 @@ function onSceneOut(){
 function checkForReloadOnNextArrive(){
   if (transStack[transStack.length-1].reloadOnNextArrive){
     delete transStack[transStack.length-1].reloadOnNextArrive;
-    reloadCurrentScene();
+    reloadSceneStack();
   }
 }
 
-function reloadCurrentScene(){
+function reloadSceneStack(){
   
+  // Called during a scene transition, wait for arrival.
   if (locked){
     transStack[transStack.length-1].reloadOnNextArrive = true;
     return;
   }
   
+  // If scene is presented modally over other scenes 
+  // Hide them until they can reload themselved when next presented. 
   for (let i = 0; i < transStack.length -1; i++){    
-    transStack[i].scene.visible = false; // Optional
-    transStack[i].reloadOnNextArrive = true;
+    if (transStack[i].scene.shouldReloadOnStageResize(scaler.stageW, scaler.stageH)){
+      transStack[i].scene.visible = false; // Optional
+      transStack[i].reloadOnNextArrive = true;
+    }
   }
   
   let _scene = transStack[transStack.length-1].scene;
-  let sceneID = _scene.sceneData.sceneID;
-  let sceneData = utils.cloneObj(_scene.sceneData);
-  delete sceneData.sceneID;
-  delete sceneData.instanceID;
-  
-  openScene(sceneID, false, 'fade', sceneData);  
-  
+  if (_scene.shouldReloadOnStageResize(scaler.stageW, scaler.stageH)){
+    let sceneID = _scene.sceneData.sceneID;
+    let sceneData = utils.cloneObj(_scene.sceneData);
+    delete sceneData.sceneID;
+    delete sceneData.instanceID;
+    openScene(sceneID, false, 'fade', sceneData);  
+  }
+    
 }
 
-export { openDefaultScene,setupStage,isScenePresentedModally,isScenePresentedWithTransparentBg,openScene,dismissScene,bg,inputScreen,sceneHolder,setScenes,reloadCurrentScene }
+export { openDefaultScene,setupStage,isScenePresentedModally,isScenePresentedWithTransparentBg,openScene,dismissScene,bg,inputScreen,sceneHolder,setScenes,reloadSceneStack }

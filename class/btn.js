@@ -126,30 +126,47 @@ export default class Btn extends PIXI.Graphics {
 
 // Helper 
 // ------
+PIXI.DisplayObject.prototype.killBtn = function(clickCallback = null){
+  this.off('pointerdown');
+  this.off('pointerupoutside');
+  this.off('pointerup');
+  this.interactive = false;
+  this.buttonMode = false;
+  let hit = this.getChildByName('__btnhit');
+  if (hit){
+    this.removeChild(hit);
+  }
+  
+}
 
-PIXI.DisplayObject.prototype.makeBtn = function(clickCallback = null){
+PIXI.DisplayObject.prototype.makeBtn = function(clickCallback = null, stateChangeCallback = null){
   
   const tintOn = btnTintOn;
-  
   this.interactive = true;
   this.buttonMode = true;
   
-  const isContainer = !this.isSprite && !(this instanceof Graphics) && !(this instanceof Btn)
-  
-  if (isContainer){
-    const debugHitBtn = false;
-    // Add a layer to collect hit events for the button, as containers have no bounds.
-    const hit = new Sprite(debugHitBtn ? PIXI.Texture.WHITE : PIXI.Texture.EMPTY);﻿
-    hit.width = this.txInfo._proj.width;
-    hit.height = this.txInfo._proj.height;
-    hit.x = this.txInfo._proj.tlX - this.txInfo._proj.x;
-    hit.y = this.txInfo._proj.tlY - this.txInfo._proj.y;
-    this.addChild(hit);
+  const isContainer = !this.isSprite && !(this instanceof Graphics) && !(this instanceof Btn);
+  if (!stateChangeCallback){
+    if (isContainer){
+      const debugHitBtn = false;
+      // Add a layer to collect hit events for the button, as containers have no bounds.
+      const hit = new Sprite(debugHitBtn ? PIXI.Texture.WHITE : PIXI.Texture.EMPTY);﻿
+      hit.name = '__btnhit';
+      hit.width = this.txInfo._proj.width;
+      hit.height = this.txInfo._proj.height;
+      hit.x = this.txInfo._proj.tlX - this.txInfo._proj.x;
+      hit.y = this.txInfo._proj.tlY - this.txInfo._proj.y;
+      this.addChild(hit);
+    }
     
   }
   
   this 
   .on('pointerdown', function(){
+    if (stateChangeCallback){
+      stateChangeCallback(true);
+      return;
+    }
     this.tint = tintOn;
     if (isContainer){
       for (const child of this.children){
@@ -160,6 +177,10 @@ PIXI.DisplayObject.prototype.makeBtn = function(clickCallback = null){
     }
   })
   .on('pointerupoutside', function(){
+    if (stateChangeCallback){
+      stateChangeCallback(false);
+      return;
+    }
     this.tint = 0xffffff;
     if (isContainer){
       for (const child of this.children){
@@ -170,12 +191,15 @@ PIXI.DisplayObject.prototype.makeBtn = function(clickCallback = null){
     }
   })
   .on('pointerup', function(){
-    
-    this.tint = 0xffffff;
-    if (isContainer){
-      for (const child of this.children){
-        if (child.isSprite){
-          child.tint = 0xffffff;
+    if (stateChangeCallback){
+      stateChangeCallback(false);
+    } else {
+      this.tint = 0xffffff;
+      if (isContainer){
+        for (const child of this.children){
+          if (child.isSprite){
+            child.tint = 0xffffff;
+          }
         }
       }
     }

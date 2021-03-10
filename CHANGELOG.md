@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.1.13 - (10-03-2021) Cleaning up, resize handles
 - v1.1.12 - (24-02-2021) Added method docs
 - v1.1.11 - (24-02-2021) Removing stage dim refs
 - v1.1.10 - (24-02-2021) Removing stage dim refs

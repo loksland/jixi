@@ -1,6 +1,5 @@
 import { scaler, Camera} from './../jixi.js';
 
-
 export default class Scene extends PIXI.Container {
   
   constructor(sceneData, psdID = null, bgColor = 0x000000, createCamera = false){   
@@ -29,17 +28,23 @@ export default class Scene extends PIXI.Container {
     this.on('removed',  this.dispose);
     
     // Prevent tapping on scenes below
-    const inputScreen = new Sprite(PIXI.Texture.EMPTY);﻿
-    inputScreen.interactive = true;
-    inputScreen.width = scaler.stageW;
-    inputScreen.height = scaler.stageH;
-    this.addChild(inputScreen);
+    this.bgScreen = new Sprite(PIXI.Texture.EMPTY);﻿ // WHITE
+    this.bgScreen.interactive = true;
+    this.bgScreen.width = scaler.stageW;
+    this.bgScreen.height = scaler.stageH;
+    this.addChild(this.bgScreen);
     
   }
   
   ready(){
     
     this.emit('ready', this);
+    
+  }
+  
+  shouldReloadOnStageResize(stageW, stageH){
+    
+    return true;
     
   }
   
@@ -75,6 +80,8 @@ export default class Scene extends PIXI.Container {
     
     this.off('removed',  this.dispose);
     this.killTweens();
+    
+    this.bgScreen = null;
     
     // Once removed from stage, destroy and use no more.
     this.destroy({children:true});  // Keep textures though destroys children

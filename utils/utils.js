@@ -8,8 +8,69 @@ export function getFontFamilyFromGoogleFontURL(ff) {
     let end = ff.indexOf('&', start);
     if (end === -1) end = undefined;
     var fam = ff.slice(start + 7, end).split('+').join(' ');
+    //return fam + ':600'
     return fam;
 }
+
+export function fontWeightStrToNum(fontWeightStr){
+
+  let str = fontWeightStr.trim().toLowerCase();
+
+  if (str.split('thin').length > 1){
+    return 100;
+  }
+  
+  if (str.split('light').length > 1){
+    if (str.split('ultra').length > 1 || str.split('extra').length > 1){
+        return 200;
+    }
+    return 300;
+  }
+  
+  if (str.split('normal').length > 1 || str.split('regular').length > 1){
+    
+    return 400;
+  }
+
+  if (str.split('medium').length > 1){
+    return 500;
+  }
+  
+  if (str.split('bold').length > 1){
+    
+    if (str.split('semi').length > 1 || str.split('demi').length > 1){
+      return 600;
+    } else if (str.split('ultra').length > 1 || str.split('extra').length > 1){
+        return 800;
+    }
+    return 700;
+  }
+  
+  if (str.split('black').length > 1){
+      return 900;
+  }
+
+  return 400;
+
+/*  
+100 - Thin
+200 - Extra Light (Ultra Light)
+300 - Light
+400 - Normal
+500 - Medium
+600 - Semi Bold (Demi Bold)
+700 - Bold
+800 - Extra Bold (Ultra Bold)
+900 - Black (Heavy)
+*/
+
+  // Pixi supports:
+  //  ('normal', 'bold', 'bolder', 'lighter' and '100', '200', '300', '400', '500', '600', '700', '800' or '900')
+  
+  
+}
+  
+
 
 export function e(id){
   return id ? document.getElementById(id) : null;
@@ -616,4 +677,16 @@ public static function midPointBetweenPoints(aX, aY, bX, bY) {
 
 
 */
+
+export function shuffle(array) {
+  let counter = array.length;
+  while (counter > 0) {
+    let index = Math.floor(Math.random() * counter);
+    counter--;
+    let temp = array[counter];
+    array[counter] = array[index];
+    array[index] = temp;
+  }
+  return array;
+}
 

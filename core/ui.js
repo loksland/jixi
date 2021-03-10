@@ -19,6 +19,7 @@ function registerFonts(fonts){
     }
   }
   
+  
 }
 
 // Index textures
@@ -74,6 +75,8 @@ export function loadAssets(_loadAssetCallback){
   
   if (googleFontFamilies.length > 0){
     initialLoadItemCount++;
+    
+    // https://github.com/typekit/webfontloader
     WebFont.load({
         google: {
             families: googleFontFamilies
@@ -87,6 +90,7 @@ export function loadAssets(_loadAssetCallback){
           onLoadComplete(); // Failed load will fallback
         } 
     });
+    
   }
   
   // 2) Load all images
@@ -139,8 +143,10 @@ PIXI.DisplayObject.fromTx = function(txPath){
       fontFamily: fontMapping[txInfo[txPath].tfParams.font],
       fontSize: txInfo[txPath].tfParams.fontSize * scaler.proj[txInfo[txPath].projID].scale, // Apply projection scale to font size
       fill: txInfo[txPath].tfParams.color,
+      fontWeight: utils.fontWeightStrToNum(txInfo[txPath].tfParams.fontStyle),
       align: txInfo[txPath].tfParams.align // Only affects multi-line fields, use reg to control alignment
     });
+  
     
   } else  if (this == Sprite || this.prototype instanceof Sprite){ // Custom Sprite class
     
@@ -149,11 +155,12 @@ PIXI.DisplayObject.fromTx = function(txPath){
     }
     dispo = new this(resources[txPath].texture);
   
-  } else if (this == Container || this.prototype instanceof Container){ // Custom container class
+  } else if (this == Container || (this.prototype instanceof Container)){ // Custom container class
     
     dispo = new this();
     
   } else {
+
     throw new Error('Unable to initialize from texture `'+txPath+'`')
   }
   
@@ -474,11 +481,11 @@ function performValuePathMapping(mapping){
 }
 
 
-PIXI.DisplayObject.prototype.hug = function(hugStr){
+PIXI.DisplayObject.prototype.hug = function(hugStr, hugBounds = null){
   
   const hugAlign = utils.alignmentStringToXY(hugStr, true); // Result may have null for undefined
   
-  const hugBounds = {width:scaler.stageW, height:scaler.stageH}; // May be extended for artboard in future
+  hugBounds = !hugBounds ? {width:scaler.stageW, height:scaler.stageH} : hugBounds; // May be extended for artboard in future
   const retainLayoutPadding = true;
   const applyProjScaleToPadding = false;
     

@@ -51,7 +51,7 @@ function setup(){ // Called once on init for now
 
 class ArtboardProjection {
   
-  constructor(alignment = null, scaleToFit = null, matchProjScale = null, pinToProj = null, stretchPosMode = false, minDensity = null, minScale = null, maxScale = null){
+  constructor(alignment = null, scaleFn = null, scaleToFit = null, matchProjScale = null, pinToProj = null, stretchPosMode = false, minDensity = null, minScale = null, maxScale = null){
     
     // A projection has 3 properties.
     // - this.scale 
@@ -62,8 +62,12 @@ class ArtboardProjection {
     this.stretchPosMode = stretchPosMode;
     
     // Determine scale 
-      
-    if (scaleToFit !== null){
+    
+    if (scaleFn !== null){
+    
+      this.scale = scaleFn(stageW, stageH);
+    
+    } else if (scaleToFit !== null){
       
       scaleToFit = scaleToFit.toLowerCase();
       // `w` / `h` / `contain` / 'cover' (case insensitive). 
@@ -80,11 +84,13 @@ class ArtboardProjection {
       }
       
     } else if (matchProjScale){
+      
       // Get scale from another projection
       if (matchProjScale && !proj[matchProjScale]){
         throw new Error('Scale match projection not found `'+matchProjScale+'`. Check declaration order.')
       }
-      this.scale = proj[matchProjScale].scale;            
+      this.scale = proj[matchProjScale].scale;    
+              
     }
     
     // Apply scale limits
@@ -188,10 +194,6 @@ function onResizeImmediate(){
   let _stageW = app.renderer.view.width/window.devicePixelRatio;
   let _stageH = app.renderer.view.height/window.devicePixelRatio;
   
-  if (_stageW == stageW && _stageH == stageH){
-    return;
-  }
-  
   emitter.emit('resize_immediate', _stageW, _stageH);
   
   utils.killWaitsFor(onResizeThrottled)
@@ -213,7 +215,7 @@ function onResizeThrottled(){
   proj = {};
   for (let projectionSlug in artboardProjectionParams){
     let params = artboardProjectionParams[projectionSlug];    
-    proj[projectionSlug] = new ArtboardProjection(params.alignment, params.scaleToFit, params.matchProjScale, params.pinToProj, params.stretchPosMode, params.minDensity, params.minScale, params.maxScale);   
+    proj[projectionSlug] = new ArtboardProjection(params.alignment, params.scaleFn, params.scaleToFit, params.matchProjScale, params.pinToProj, params.stretchPosMode, params.minDensity, params.minScale, params.maxScale);   
   }
 
   scaleFactor = proj.default.scale; 

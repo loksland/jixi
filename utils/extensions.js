@@ -57,7 +57,7 @@ PIXI.Sprite.prototype.hitTestRect = function(globalPos){
   const topLeft = this.getLocalCornerPos(-1, -1);
   const dX = localPos.x - topLeft.x;
   const dY = localPos.y - topLeft.y;
-  return dX >= 0.0 && dX <= this.localWidth && dY >= 0.0 && dY <= this.localHeight
+  return dX >= 0.0 && dX <= this.localWidth && dY >= 0.0 && dY <= this.localHeight;
   
 }
 
@@ -371,8 +371,6 @@ PIXI.Graphics.prototype.dashedLineTo = function(fromPt, toPt, dash = 16.0, gap =
   
 };
 
-
-
 PIXI.DisplayObject.prototype.adjustForParentScale = function(){
   this.scale.x *= Math.abs(1.0/this.parent.scale.x);
   this.scale.y *= Math.abs(1.0/this.parent.scale.y);
@@ -386,8 +384,36 @@ PIXI.Point.prototype.plus = function(pt){
 }
 
 PIXI.Point.prototype.minus = function(pt){
-
   this.x -= pt.x
   this.y -= pt.y
   return this;
 }
+
+// Display object will remain in place from one parent to another
+// https://pixijs.download/dev/docs/PIXI.AnimatedSprite.html#toGlobal
+PIXI.DisplayObject.prototype.translateToCoordSpace = function(oldParent, newParent){
+  
+  return newParent.toLocal(this.position, oldParent, this.position);
+  
+  
+}
+PIXI.Point.prototype.translateToCoordSpace = function(oldParent, newParent){
+  
+  return newParent.toLocal(this, oldParent, this);
+  
+  
+}
+PIXI.ObservablePoint.prototype.translateToCoordSpace = function(oldParent, newParent){
+
+  return newParent.toLocal(this, oldParent, this);
+  
+}
+
+
+
+
+
+
+
+
+

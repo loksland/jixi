@@ -44,6 +44,17 @@ export function createApp(_htmlEle, fullScreen = false, bgAlpha = 1.0, onLoadCal
         resizeTo: fullScreen ? window : htmlEle
     });
     
+    //app.renderer.view.style.touchAction = 'inherit'
+    //app.renderer.plugins.interaction.autoPreventDefault = false;
+    
+    //document.body.addEventListener("mouseover", ()=>{
+    //  console.log('ho')
+    //});
+    
+    
+    //https://github.com/pixijs/pixi.js/issues/4824
+    //app.renderer.plugins.interaction.autoPreventDefault = false;
+    //app.renderer.view.style.touchAction = 'auto';
     
     scaler.setup();
     
@@ -66,11 +77,17 @@ function setup(bgAlpha){
   // Attach canvas to the DOM 
   htmlEle.appendChild(app.view);
   
+  //app.view.style.pointerEvents = 'auto';
+  //htmlEle.style.pointerEvents = 'none';
+  
   // Attach core display objects 
   nav.setupStage(app.stage, bgAlpha);
   
   // Debug TF
-  if (!isProd){
+  if (isProd){
+    // Disable right click - this menu may be confusing to user
+    htmlEle.setAttribute('oncontextmenu', 'return false');
+  } else {
     const debugTf = new PIXI.Text('X', {fontFamily : 'Arial', fontSize: 13, fill : 0xffffff, align : 'left', dropShadow: true,
     dropShadowColor: '#000000',
     dropShadowBlur: 0.0,
@@ -82,7 +99,7 @@ function setup(bgAlpha){
         debugTf.text = PIXI.Ticker.shared.FPS.toFixed(2);
     }); 
   }
-    
+  
   // Get default scene and load it
   if (!nav.openDefaultScene()){
     throw new Error('Default scene not found.')
