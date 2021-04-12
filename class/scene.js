@@ -44,6 +44,9 @@ export default class Scene extends PIXI.Container {
   
   shouldReloadOnStageResize(stageW, stageH){
     
+    this.bgScreen.width = stageW
+    this.bgScreen.height = stageH
+    
     return true;
     
   }

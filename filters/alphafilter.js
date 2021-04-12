@@ -32,3 +32,5 @@ export default class AlphaFilter extends PIXI.Filter {
     get alpha() { return this.uniforms.uAlpha; }
     set alpha(value) { this.uniforms.uAlpha = value; }
 }
+
+export const id = 'AlphaFilter'

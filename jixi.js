@@ -22,9 +22,17 @@ import * as scaler from './core/scaler.js';
 import * as ui from './core/ui.js';
 
 // Props 
-let app; // PIXI app instance
+let pixiApp; // PIXI app instance
 let isProd = process.env.NODE_ENV != 'development';  // Set in package.json: eg. "start:dev": "webpack serve --mode development"
 let htmlEle; // The element containing the game
+
+// Load all transitions
+let filters = {};
+
+const _filters = utils.requireAll(require.context('./filters', false, /.js$/));
+for (let _filter of _filters) {
+  filters[_filter.id] = _filter.default;
+}
 
 //let stageW = 0; // Stage dims 
 //let stageH = 0; // Stage dims 
@@ -34,7 +42,7 @@ export function createApp(_htmlEle, fullScreen = false, bgAlpha = 1.0, onLoadCal
     htmlEle = _htmlEle;
     
     // Docs: http://pixijs.download/release/docs/PIXI.Application.html#Application
-    app = new PIXI.Application({
+    pixiApp = new PIXI.Application({
       //  width: window.innerWidth, 
       //  height: window.innerHeight,                       
         autoDensity: true, //  Adjusts the canvas using css pixels so it will scale properly (it was the default behavior in v4)
@@ -43,28 +51,16 @@ export function createApp(_htmlEle, fullScreen = false, bgAlpha = 1.0, onLoadCal
         resolution: window.devicePixelRatio, // Resolution controls scaling of content (sprites, etc.) 
         resizeTo: fullScreen ? window : htmlEle
     });
-    
-    //app.renderer.view.style.touchAction = 'inherit'
-    //app.renderer.plugins.interaction.autoPreventDefault = false;
-    
-    //document.body.addEventListener("mouseover", ()=>{
-    //  console.log('ho')
-    //});
-    
-    
-    //https://github.com/pixijs/pixi.js/issues/4824
-    //app.renderer.plugins.interaction.autoPreventDefault = false;
-    //app.renderer.view.style.touchAction = 'auto';
-    
+
     scaler.setup();
     
     ui.loadAssets(function(){
       
-      if (onLoadCallback){
-        onLoadCallback();
-      }
-      
       setup(bgAlpha);
+      
+      if (onLoadCallback){
+        onLoadCallback(pixiApp);
+      }
       
     })
     
@@ -75,13 +71,13 @@ export function createApp(_htmlEle, fullScreen = false, bgAlpha = 1.0, onLoadCal
 function setup(bgAlpha){ 
   
   // Attach canvas to the DOM 
-  htmlEle.appendChild(app.view);
+  htmlEle.appendChild(pixiApp.view);
   
   //app.view.style.pointerEvents = 'auto';
   //htmlEle.style.pointerEvents = 'none';
   
   // Attach core display objects 
-  nav.setupStage(app.stage, bgAlpha);
+  nav.setupStage(pixiApp.stage, bgAlpha);
   
   // Debug TF
   if (isProd){
@@ -93,8 +89,9 @@ function setup(bgAlpha){
     dropShadowBlur: 0.0,
     dropShadowDistance: 2.0});  
     debugTf.x = 3.0;
-    debugTf.y = 3.0;    
-    app.stage.addChild(debugTf);
+    debugTf.y = 3.0; //+ 50.0;    
+    debugTf.alpha = 0.5;
+    pixiApp.stage.addChild(debugTf);
     ticker.add(function(time){
         debugTf.text = PIXI.Ticker.shared.FPS.toFixed(2);
     }); 
@@ -132,7 +129,7 @@ window.keyCodes = keyCodes;
 // Ref: https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export
 
 // export {stageW, stageH} from './core/scaler.js'; // Convenience alias
-export {app};
+export {pixiApp, filters};
 export {Scene, Camera, Btn}; // Classes
 export {utils, nav, ui, scaler}; // Core 
 

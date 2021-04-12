@@ -1,5 +1,5 @@
 
-import { app, utils, nav } from './../jixi.js';
+import { pixiApp, utils, nav } from './../jixi.js';
 
 let proj; // Artboard projections 
 
@@ -180,19 +180,19 @@ class ArtboardProjection {
 // ---------------
 
 let emitter;
-const resizeThrottleDelay = 0.5;
+const resizeThrottleDelay = 0.2;
 
 function initResizeListener(){
   // https://nodejs.org/api/events.html
   // https://github.com/primus/eventemitter3
   emitter = new PIXI.utils.EventEmitter();
-  app.renderer.on('resize', onResizeImmediate); // Listen for stage events
+  pixiApp.renderer.on('resize', onResizeImmediate); // Listen for stage events
 }
 
 function onResizeImmediate(){
   
-  let _stageW = app.renderer.view.width/window.devicePixelRatio;
-  let _stageH = app.renderer.view.height/window.devicePixelRatio;
+  let _stageW = pixiApp.renderer.view.width/window.devicePixelRatio;
+  let _stageH = pixiApp.renderer.view.height/window.devicePixelRatio;
   
   emitter.emit('resize_immediate', _stageW, _stageH);
   
@@ -203,8 +203,8 @@ function onResizeImmediate(){
 
 function onResizeThrottled(){
   
-  let _stageW = app.renderer.view.width/window.devicePixelRatio;
-  let _stageH = app.renderer.view.height/window.devicePixelRatio;
+  let _stageW = pixiApp.renderer.view.width/window.devicePixelRatio;
+  let _stageH = pixiApp.renderer.view.height/window.devicePixelRatio;
   
   if (_stageW == stageW && _stageH == stageH){
     return;
@@ -225,12 +225,12 @@ function onResizeThrottled(){
   
 }
 
-function on(eventName, listener){
-  return emitter.on(eventName, listener);
+function on(eventName, listener, context){
+  return emitter.on(eventName, listener, context);
 }
 
-function off(eventName, listener){
-  return emitter.off(type, listener);
+function off(eventName, listener, context){
+  return emitter.off(type, listener, context);
 }
 
 export { setup, proj, stageW, stageH, on, off, resizeThrottleDelay, scaleFactor, uiScaleFactor }

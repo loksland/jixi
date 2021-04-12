@@ -50,9 +50,11 @@ function setupStage(stage, bgAlpha){
   inputScreen.height = scaler.stageH;
   //inputScreen.cursor = 'auto' 'not-allowed';
   
-  //var alphaFilter = new AlphaFilter();
-  //alphaFilter.alpha = 0.5;
-  //sceneHolder.filters = [alphaFilter];
+  //
+  //
+  //
+  
+
   
   stage.addChild(inputScreen);
   inputScreen.visible = false;
@@ -66,6 +68,9 @@ function onResizeImmediate(_stageW,_stageH){
   
   bg.width = _stageW;
   bg.height = _stageH;
+  
+  inputScreen.width = scaler.stageW;
+  inputScreen.height = scaler.stageH;
   
 }
 

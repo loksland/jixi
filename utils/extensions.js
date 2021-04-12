@@ -287,6 +287,13 @@ PIXI.DisplayObject.prototype.angleToLocal = function(globalAngle){
   
 }
 
+PIXI.DisplayObject.prototype.removeFromParent = function(){
+  
+  if (this.parent){
+    this.parent.removeChild(this)
+  }
+  
+}
 
 PIXI.DisplayObject.prototype.bringToFront = function(){
   

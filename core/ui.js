@@ -19,7 +19,6 @@ function registerFonts(fonts){
     }
   }
   
-  
 }
 
 // Index textures
@@ -488,12 +487,12 @@ PIXI.DisplayObject.prototype.hug = function(hugStr, hugBounds = null){
   hugBounds = !hugBounds ? {width:scaler.stageW, height:scaler.stageH} : hugBounds; // May be extended for artboard in future
   const retainLayoutPadding = true;
   const applyProjScaleToPadding = false;
-    
+  
   const paddingScale = applyProjScaleToPadding ? proj.default.scale : 1.0;
   if (hugAlign.x !== null){
     if (hugAlign.x == -1){
       const paddingLeftX = retainLayoutPadding ? paddingScale * (this.txInfo.x - this.txInfo.regPercX*this.txInfo.width) : 0.0;
-      this.x =  this.txInfo._proj.x - this.txInfo._proj.tlX + paddingLeftX
+      this.x =  this.txInfo._proj.x - this.txInfo._proj.tlX + paddingLeftX;
     } else if (hugAlign.x == 0){
       this.x = hugBounds.width*0.5 - (this.txInfo._proj.brX - this.txInfo._proj.x) + this.txInfo._proj.width*0.5;
     } else if (hugAlign.x == 1){
@@ -501,6 +500,7 @@ PIXI.DisplayObject.prototype.hug = function(hugStr, hugBounds = null){
       this.x = hugBounds.width - (this.txInfo._proj.brX - this.txInfo._proj.x + paddingRightX)  
     }
   }
+  
   
   if (hugAlign.y !== null){
     if (hugAlign.y == -1){

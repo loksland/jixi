@@ -126,7 +126,7 @@ export default class Btn extends PIXI.Graphics {
 
 // Helper 
 // ------
-PIXI.DisplayObject.prototype.killBtn = function(clickCallback = null){
+PIXI.DisplayObject.prototype.killBtn = function(){
   this.off('pointerdown');
   this.off('pointerupoutside');
   this.off('pointerup');
@@ -158,42 +158,31 @@ PIXI.DisplayObject.prototype.makeBtn = function(clickCallback = null, stateChang
       hit.y = this.txInfo._proj.tlY - this.txInfo._proj.y;
       this.addChild(hit);
     }
-    
   }
   
   this 
-  .on('pointerdown', function(){
+  .on('pointerdown', function(){    
+    
     if (stateChangeCallback){
-      stateChangeCallback(true);
-      return;
-    }
-    this.tint = tintOn;
-    if (isContainer){
-      for (const child of this.children){
-        if (child.isSprite){
-          child.tint = tintOn;
-        }
-      }
-    }
-  })
-  .on('pointerupoutside', function(){
-    if (stateChangeCallback){
-      stateChangeCallback(false);
-      return;
-    }
-    this.tint = 0xffffff;
-    if (isContainer){
-      for (const child of this.children){
-        if (child.isSprite){
-          child.tint = 0xffffff;
-        }
-      }
-    }
-  })
-  .on('pointerup', function(){
-    if (stateChangeCallback){
-      stateChangeCallback(false);
+      stateChangeCallback(true, this);
     } else {
+      this.tint = tintOn;
+      if (isContainer){
+        for (const child of this.children){
+          if (child.isSprite){
+            child.tint = tintOn;
+          }
+        }
+      }
+    }
+    
+    this.on('pointerupoutside', function(){
+      this.off('pointerup');
+      this.off('pointerupoutside');
+      if (stateChangeCallback){
+        stateChangeCallback(false, this);
+        return;
+      }
       this.tint = 0xffffff;
       if (isContainer){
         for (const child of this.children){
@@ -202,14 +191,30 @@ PIXI.DisplayObject.prototype.makeBtn = function(clickCallback = null, stateChang
           }
         }
       }
-    }
+    }, this)
     
-    if (clickCallback){
-      clickCallback(this);
-    } else if (typeof this.parent.onBtn === 'function'){
-      this.parent.onBtn.bind(this.parent)(this);
-    }
+    this.on('pointerup', function(){
+      this.off('pointerup');
+      this.off('pointerupoutside');
+      if (stateChangeCallback){
+        stateChangeCallback(false, this);
+      } else {
+        this.tint = 0xffffff;
+        if (isContainer){
+          for (const child of this.children){
+            if (child.isSprite){
+              child.tint = 0xffffff;
+            }
+          }
+        }
+      }
+      if (clickCallback){
+        clickCallback(this);
+      } else if (typeof this.parent.onBtn === 'function'){
+        this.parent.onBtn.bind(this.parent)(this);
+      }
+    }, this)
     
-  })
-  
+  }, this)
+
 }
