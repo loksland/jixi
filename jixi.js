@@ -21,6 +21,9 @@ import * as nav from './core/nav.js';
 import * as scaler from './core/scaler.js';
 import * as ui from './core/ui.js';
 
+import KB from './core/kb.js';
+const kb = new KB();
+
 // Props 
 let pixiApp; // PIXI app instance
 let isProd = process.env.NODE_ENV != 'development';  // Set in package.json: eg. "start:dev": "webpack serve --mode development"
@@ -131,5 +134,5 @@ window.keyCodes = keyCodes;
 // export {stageW, stageH} from './core/scaler.js'; // Convenience alias
 export {pixiApp, filters};
 export {Scene, Camera, Btn}; // Classes
-export {utils, nav, ui, scaler}; // Core 
+export {utils, nav, ui, scaler, kb}; // Core 
 

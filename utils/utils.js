@@ -535,7 +535,7 @@ export function requireAll( requireContext ) {
 }
 
 
-// From underscrore.js
+// From underscore.js
 // Usage: app.renderer.on('resize', debounce(onResize, 1000));
 export function debounce(func, wait, immediate) {
     let timeout;
@@ -729,7 +729,6 @@ export function lightenCol(rgb, brite)
 
   return (r << 16) | (g << 8) | b;
 }
-
 
 export function isTouchDevice() {
   return (('ontouchstart' in window) ||
