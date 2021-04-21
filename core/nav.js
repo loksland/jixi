@@ -50,12 +50,6 @@ function setupStage(stage, bgAlpha){
   inputScreen.height = scaler.stageH;
   //inputScreen.cursor = 'auto' 'not-allowed';
   
-  //
-  //
-  //
-  
-
-  
   stage.addChild(inputScreen);
   inputScreen.visible = false;
   
@@ -75,9 +69,7 @@ function onResizeImmediate(_stageW,_stageH){
 }
 
 function onResize(stageW,stageH){
-  
   reloadSceneStack();
-  
 }
 
 function enableInput(enable){
@@ -206,13 +198,17 @@ function dismissScene(){
 function onSceneIn(){
   
   if (transStack[transStack.length-1].scenePrev){
-    
+
     transStack[transStack.length-1].scenePrev.onDidExit(transStack[transStack.length-1].isModal); 
     
     // Remove old scene if no longer required
     if (!transStack[transStack.length-1].isModal){
+      let scenePrev = transStack[transStack.length-1].scenePrev
       sceneHolder.removeChild(transStack[transStack.length-1].scenePrev); // Destroy will be called by scene class
       transStack[transStack.length-1].scenePrev = null; // Don't retain reference to scene
+      if (transStack[transStack.length-2].scene == scenePrev){
+        transStack.splice(transStack.length-2,1);
+      }
     }
     
   }
@@ -222,12 +218,9 @@ function onSceneIn(){
     // Scene replaces previous modal scene. Swap them in trans stack.
     
     pendingModalTrans.scene = transStack[transStack.length-1].scene;
-    
     transStack[transStack.length-1].scene = null;
     transStack.splice(transStack.length-1,1);
-    
     transStack.push(pendingModalTrans);
-    
     pendingModalTrans = null;
     
   }
@@ -289,6 +282,7 @@ function reloadSceneStack(){
   
   let _scene = transStack[transStack.length-1].scene;
   if (_scene.shouldReloadOnStageResize(scaler.stageW, scaler.stageH)){
+    
     let sceneID = _scene.sceneData.sceneID;
     let sceneData = utils.cloneObj(_scene.sceneData);
     delete sceneData.sceneID;
@@ -296,6 +290,15 @@ function reloadSceneStack(){
     openScene(sceneID, false, 'fade', sceneData);  
   }
     
+}
+
+
+function debugTransStack(){
+  
+  for (let i = transStack.length - 1; i >= 0; i--){   
+    console.log(String(i) + ') `'+transStack[i].scene.name+'` ' + (i == transStack.length - 1 ? '*top*' : ''));
+  }
+  
 }
 
 export { openDefaultScene,setupStage,isScenePresentedModally,isScenePresentedWithTransparentBg,openScene,dismissScene,bg,inputScreen,sceneHolder,setScenes,reloadSceneStack }
