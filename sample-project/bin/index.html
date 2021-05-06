@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="shortcut icon" href="./favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+	<title></title>
+<style>
+
+</style>
+</head>
+
+<!--Disable touch zooming, mobile scrolling, and right click on desktop-->
+<body style="background-color: #000; touch-action: none; overflow: hidden; overscroll-behavior-y: contain; position: fixed; margin: 0; padding: 0; min-height: 100vh; width: 100%; overflow: hidden; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;"  >
+	
+	<noscript>You need to enable JavaScript to run this app.</noscript>
+	
+	<div id="game" style="width:100%;height:100%;;margin: 0;"  ></div>
+
+	<!--spinner-->
+	<style>
+	.spinner{animation:rotate 2s linear infinite;z-index:2;position:absolute;top:50%;left:50%;margin:-25px 0 0 -25px;width:50px;height:50px}.spinner .path{stroke:#fff;stroke-linecap:round;animation:dash 1.5s ease-in-out infinite}@keyframes rotate{100%{transform:rotate(360deg)}}@keyframes dash{0%{stroke-dasharray:1,150;stroke-dashoffset:0}50%{stroke-dasharray:90,150;stroke-dashoffset:-35}100%{stroke-dasharray:90,150;stroke-dashoffset:-124}}
+	</style>
+	<svg id="spinner" class="spinner" viewBox="0 0 50 50">
+	  <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="7"></circle>
+	</svg>
+	<!--/spinner-->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.7/pixi.min.js" integrity="sha512-k8E2ILMRTO1YBnA2dvTDfsZs7f07gazZDQYbsv2NCxnM9hYFwCKu+rWISm8/fFB1I/gi0tgnURcXJVR7GlE0BA==" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/PixiPlugin.min.js"></script>	
+	<script src="https://cdn.jsdelivr.net/npm/pixi-filters@latest/dist/pixi-filters.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+	<script src="js/app.js"></script>
+	
+</body>
+
+<footer>
+	<!-- Prevent mobile scrolling/refreshing -->
+	<script>
+		document.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+	</script>
+</footer>
+
+</html>

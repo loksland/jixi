@@ -46,13 +46,14 @@ export function createApp(_htmlEle, fullScreen = false, bgAlpha = 1.0, onLoadCal
     
     // Docs: http://pixijs.download/release/docs/PIXI.Application.html#Application
     pixiApp = new PIXI.Application({
-      //  width: window.innerWidth, 
-      //  height: window.innerHeight,                       
+        // width: window.innerWidth, 
+        // height: window.innerHeight,                       
         autoDensity: true, //  Adjusts the canvas using css pixels so it will scale properly (it was the default behavior in v4)
         antialias: window.devicePixelRatio == 1, //(), 
         transparent: bgAlpha < 1.0,
         resolution: window.devicePixelRatio, // Resolution controls scaling of content (sprites, etc.) 
-        resizeTo: fullScreen ? window : htmlEle
+        resizeTo: fullScreen ? window : htmlEle,
+        backgroundColor: 0x000000
     });
 
     scaler.setup();
@@ -68,7 +69,7 @@ export function createApp(_htmlEle, fullScreen = false, bgAlpha = 1.0, onLoadCal
     })
     
 }
-//window.createGame = createGame; // Make public
+
 
 // All assets are loaded by this point and the stage is empty
 function setup(bgAlpha){ 
@@ -106,30 +107,6 @@ function setup(bgAlpha){
   }
   
 }
-
-// Utils 
-
-// Keyboard 
-// --------
-/*
-
-See: https://github.com/kittykatattack/learningPixi#keyboard
-
-let keyCodes = {};
-keyCodes.ESCAPE = 27;
-keyCodes.LEFT = 37;
-keyCodes.RIGHT = 39;
-keyCodes.UP = 38;
-keyCodes.DOWN = 40;
-keyCodes.SPACE = 32;
-keyCodes.CMD = 91;
-keyCodes.CNTRL = 17;
-
-window.keyCodes = keyCodes;
-
-*/
-
-// Ref: https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export
 
 // export {stageW, stageH} from './core/scaler.js'; // Convenience alias
 export {pixiApp, filters};

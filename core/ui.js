@@ -72,7 +72,7 @@ export function loadAssets(_loadAssetCallback){
   
   // 1) Load Google web fonts     
   
-  if (googleFontFamilies.length > 0){
+  if (googleFontFamilies && googleFontFamilies.length > 0){
     initialLoadItemCount++;
     
     // https://github.com/typekit/webfontloader
@@ -297,6 +297,13 @@ Scene.prototype.mapTxInfo = function(txInfoMapping, _psdID = null){
   
 }
 
+// Returns texture names only for given pattern
+PIXI.DisplayObject.prototype.getArt = function(txNameGlob){
+  let args = Array.from(arguments);  
+  return this.addArt.apply(this, ['_GETNAMESONLY'].concat(args));
+  
+}
+
 // If caller is a scene then all top level items are added 
 // otherwise will add chidren
 // |txNameGlob| is an optional texture name pattern, can add multiple arguments, will add textures that match any condition
@@ -344,6 +351,12 @@ PIXI.DisplayObject.prototype.addArt = function(txNameGlob){
   endIndex = endIndex === null ? 0 : endIndex;
   
   let txNameGlobs = Array.from(arguments);
+  let getNamesOnly = false;
+  if (txNameGlobs.length > 0 && txNameGlobs[0] == '_GETNAMESONLY'){
+    getNamesOnly = true;
+    txNameGlobs.shift();
+  }
+  
   if (txNameGlobs.length == 0 && typeof this.addArtTxNameGlobs === 'function'){
     // Use caller's custom txNameGlobs list
     txNameGlobs = this.addArtTxNameGlobs();
@@ -366,6 +379,7 @@ PIXI.DisplayObject.prototype.addArt = function(txNameGlob){
   }
   
   let addedTx = {};
+  let txNameList = [];
   
   for (let i = startIndex; i >= endIndex; i--){ 
     
@@ -394,48 +408,55 @@ PIXI.DisplayObject.prototype.addArt = function(txNameGlob){
       
       if (nameMatchOK){
         
-        let dispo = null;
-        if (txs[i].type == 'div'){ // btn
-          dispo = Container.fromTx(psdID + '/' + txs[i].name);      
-        } else if (txs[i].type == 'img'){      
-          dispo = Sprite.fromTx(psdID + '/' + txs[i].name);      
-        } else if (txs[i].type == 'tf'){      
-          dispo = Text.fromTx(psdID + '/' + txs[i].name);   
-        } else if (txs[i].type == 'btn'){
-          dispo = Btn.fromTx(psdID + '/' + txs[i].name);
-        } else if (txs[i].type == 'rect'){
-          dispo = Graphics.fromTx(psdID + '/' + txs[i].name);  
-        }
-        
-        if (dispo != null){
+        if (getNamesOnly){
           
-          if (txs[i].parent){
-            
-            // If parent is a spite counter act the effect of its scale on children
-            if (this.isSprite){
-              dispo.x *= (1.0/this.scale.x);
-              dispo.y *= (1.0/this.scale.y);
-              dispo.scale.x *= (1.0/this.scale.x);
-              dispo.scale.y *= (1.0/this.scale.y);
-            }
-            
+          txNameList.push(psdID + '/' + txs[i].name);
+
+        } else {
+          
+          let dispo = null;
+          if (txs[i].type == 'div'){ // btn
+            dispo = Container.fromTx(psdID + '/' + txs[i].name);      
+          } else if (txs[i].type == 'img'){      
+            dispo = Sprite.fromTx(psdID + '/' + txs[i].name);      
+          } else if (txs[i].type == 'tf'){      
+            dispo = Text.fromTx(psdID + '/' + txs[i].name);   
+          } else if (txs[i].type == 'btn'){
+            dispo = Btn.fromTx(psdID + '/' + txs[i].name);
+          } else if (txs[i].type == 'rect'){
+            dispo = Graphics.fromTx(psdID + '/' + txs[i].name);  
           }
           
-          this.addChild(dispo);
-          
-          //console.log('- Added `'+txs[i].name+'`')
-          
-          this.art[txs[i].name] = dispo;
-          addedTx[txs[i].name] = txs[i];
-          
-          added.push(dispo);
-          
+          if (dispo != null){
+            
+            if (txs[i].parent){
+              
+              // If parent is a spite counter act the effect of its scale on children
+              if (this.isSprite){
+                dispo.x *= (1.0/this.scale.x);
+                dispo.y *= (1.0/this.scale.y);
+                dispo.scale.x *= (1.0/this.scale.x);
+                dispo.scale.y *= (1.0/this.scale.y);
+              }
+              
+            }
+            
+            this.addChild(dispo);
+            
+            //console.log('- Added `'+txs[i].name+'`')
+            
+            this.art[txs[i].name] = dispo;
+            addedTx[txs[i].name] = txs[i];
+            
+            added.push(dispo);
+            
+          }
         }
       }
     }
   }
   
-  return added; 
+  return getNamesOnly ? txNameList : added; 
   
 }
 

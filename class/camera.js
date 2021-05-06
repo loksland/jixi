@@ -140,8 +140,21 @@ export default class Camera extends PIXI.Container {
     // --------
     
     // Can be set to null to remove tracking
-    track(trackee, jump = false){
+    // - offset (point) Optionally offset trackee position when targetting
+    // - limitTrackVelX (int) Optionally disable camera moving in certain direction. -1 = only move to left, 1 = only move to right, 0 = free movement
+    // - limitTrackVelY (int) Optionally disable camera moving in certain direction. -1 = only move up, 1 = only move down, 0 = free movement
     
+    track(trackee, offset = null, jump = false, limitTrackVelX = 0, limitTrackVelY = 0){
+      
+      if (!offset){
+        this.offset = this.zeroPt.clone();
+      } else {
+        this.offset = offset;
+      }
+      
+      this.limitTrackVelX = limitTrackVelX;
+      this.limitTrackVelY = limitTrackVelY;
+      
       if (this.trackee == trackee){
         return;
       }
@@ -155,7 +168,7 @@ export default class Camera extends PIXI.Container {
       
       if (this.trackee){
                 
-        this.prevTrackeePos.set(this.trackee.x, this.trackee.y);
+        this.prevTrackeePos.set(this.trackee.x + this.offset.x, this.trackee.y + this.offset.y);
         
         this.trackee = trackee;
         if (!wasTracking){
@@ -165,7 +178,7 @@ export default class Camera extends PIXI.Container {
         if (jump){
           this.velocity.x = 0.0;
           this.velocity.y = 0.0;
-          const jumpPos = this.translatePtToCameraPos(this.trackee.position);
+          const jumpPos = this.translatePtToCameraPos(this.prevTrackeePos); // Was calculated immediately above
           this.setPos(jumpPos.x, jumpPos.y);
         }
         
@@ -181,7 +194,7 @@ export default class Camera extends PIXI.Container {
     }
     
     killTracking(){
-      TweenMax.killTweensOf(this);
+      gsap.killTweensOf(this);
       this.pauseTracking();
       this.target = null;
     }
@@ -190,6 +203,10 @@ export default class Camera extends PIXI.Container {
         
         // Convert trackee's position to global scope
         this.trackee.toGlobal(this.zeroPt, this.trackeePos)
+        
+        // Apply offset 
+        this.trackeePos.plus(this.offset)
+        
         // Account for camera's position
         this.trackeePos.minus(this.position)
         
@@ -201,6 +218,8 @@ export default class Camera extends PIXI.Container {
         this.prevTrackeePos.y = this.trackeePos.y;
         this.targetPos.copyFrom(this.translatePtToCameraPos(this.trackeePos)); 
       
+      
+        
       
       //this.targetPos.copyFrom(this.translatePtToCameraPos(this.trackee.position));    
       
@@ -244,6 +263,15 @@ export default class Camera extends PIXI.Container {
       
       this.velocity.x *= VELOCITY_DAMPENING_FACTOR;
       this.velocity.y *= VELOCITY_DAMPENING_FACTOR;
+      
+      // Apply limits
+    
+      if (this.limitTrackVelX < 0){
+        this.velocity.x = Math.max(0.0, this.velocity.x)
+      } else if (this.limitTrackVelX > 0){
+        this.velocity.x = Math.min(0.0, this.velocity.x)
+      }
+      
       
       this.setPos(this.x + this.velocity.x, this.y + this.velocity.y);
       

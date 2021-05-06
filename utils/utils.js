@@ -689,8 +689,8 @@ export function shuffle(array) {
 }
 
 // Usage:
-// utils.darkenCol(0xff3300, 50); // 50% darken
-// - amt % int from -100 (darken) to 100 (lighten)
+// utils.darkenCol(0xff3300, 0.5); // 50% darken
+// - amt % int from -1.0 (darken) to 1.0 (lighten)
 export function darkenCol(col, amt) {
   return lightenCol(col, -Math.abs(amt))
 }
@@ -700,6 +700,8 @@ export function lightenCol(rgb, brite)
   var r;
   var g;
   var b;
+  
+  brite*= 100;
   
   if (brite == 0)
     return rgb;
@@ -735,4 +737,37 @@ export function isTouchDevice() {
      (navigator.maxTouchPoints > 0) ||
      (navigator.msMaxTouchPoints > 0));
 }
+
+// Class utils 
+
+export function hasClass(el, className) {
+  
+    if (el.classList) {
+      return el.classList.contains(className);
+    }
+    return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+    
+}
+
+export function addClass(el, className) {
+  
+    if (el.classList) {
+        el.classList.add(className)
+    } else if (!hasClass(el, className)) {
+        el.className += " " + className;
+    }
+    
+}
+
+export function removeClass(el, className){
+  
+    if (el.classList) {
+        el.classList.remove(className)
+    } else if (hasClass(el, className)) {
+        var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+        el.className = el.className.replace(reg, ' ');
+    }
+    
+}
+
 

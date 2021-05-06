@@ -1,0 +1,19 @@
+{
+  "basePath": "./../bin/",
+  "relativePath": "img/%psdBase%",
+  "cropToBounds": true,
+  "outputFilePath": "./../src/ui/%psdBase%.psd.json", 
+	"outputValueFactor": 0.5,	
+	"reg": "C",
+	"template": "psdData",
+	"hug": "",
+	"z" : 0,
+  "clone" : "",
+  "ext" : "png",
+  "outputOriginLayer": "`BOUNDS",
+  "wipeRelativePath": "img/%psdBase%",
+  "pre": "layers-to-comps",
+  "post": "tinypng",
+  "makeDir": 1,
+  "class": ""
+}
