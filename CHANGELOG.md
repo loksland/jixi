@@ -1,5 +1,6 @@
 # Changelog
 
+- v1.1.16 - (06-05-2021) Pruning NPM file list
 - v1.1.15 - (06-05-2021) Camera improvements, CSS class utils added, jixi bg colour added
 - v1.1.14 - (21-04-2021) Keyboard input class added
 - v1.1.13 - (10-03-2021) Cleaning up, resize handles
