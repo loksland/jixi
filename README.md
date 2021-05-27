@@ -45,12 +45,9 @@ nav.setScenes(scenes);
 
 ui.registerPsdInfo(utils.requireAll(require.context('./ui', false, /.json$/))); // Path to PSD data
 ui.registerFonts({
-  body: {
-    fontURL: 'https://fonts.googleapis.com/css?family=Lato&display=swap', // Only accepts Google Fonts
-    psdFontName: 'Lato-Regular', 
-    fallbacks: ['Georgia', 'Times', 'Times New Roman', 'serif'] // Font family fallbacks
-  }
+  standard: {psdFontNames: ['Montserrat'], googleFontName: 'Montserrat', additionalStyles:['700 italic'], fallbacks:['serif']}
 });
+
 
 // Scaler
 
@@ -73,7 +70,7 @@ scaler.configureArtboard(artboardDims, artboardScaleFactor, artboardProjectionPa
 
 // Kick off
 
-createApp(utils.e('game'), true, 1.0, () => {  
+createApp(utils.e('game'), true, 1.0, 0x000000, () => {  
   gsap.to(utils.e('spinner'), 0.4, {alpha:0.0, ease:Linear.easeNone, onComplete:function(){
     utils.e('spinner').remove();
   }});

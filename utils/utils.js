@@ -1,20 +1,14 @@
 const objectAssignDeep = require(`object-assign-deep`);
 export { objectAssignDeep}
 
-
-export function getFontFamilyFromGoogleFontURL(ff) {
-    const start = ff.indexOf('family=');
-    if (start === -1) return 'sans-serif';
-    let end = ff.indexOf('&', start);
-    if (end === -1) end = undefined;
-    var fam = ff.slice(start + 7, end).split('+').join(' ');
-    //return fam + ':600'
-    return fam;
-}
-
 export function fontWeightStrToNum(fontWeightStr){
 
   let str = fontWeightStr.trim().toLowerCase();
+  
+  // If a font weight number is supplied then return it as is
+  if (!isNaN(Number(str)) && str.length == 3 && str.charAt(1) == '0' && str.charAt(2) == '0'){
+    return Number(str);
+  }
 
   if (str.split('thin').length > 1){
     return 100;
@@ -769,5 +763,15 @@ export function removeClass(el, className){
     }
     
 }
+
+// Offset is an optional argument specifying a value that is on the round beat.
+export function roundToNearest(number, step, offset = 0) {
+	if (offset != 0) {
+		offset = offset-(Math.round(offset/step)*step);
+		return offset+Math.round((number-offset)/step)*step;
+	} else {
+		return (Math.round(number/step)*step);
+	}
+};
 
 

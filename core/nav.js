@@ -30,6 +30,11 @@ function setScenes(_scenes){
 
 function setupStage(stage, bgAlpha){
   
+  
+  //ticker.add(function(time) {
+  //  gsap.set(pixiApp.view, {opacity:1.0});
+  //});
+  
   // Add background 
   bg = new PIXI.Sprite(PIXI.Texture.WHITE);﻿
   bg.width = scaler.stageW;

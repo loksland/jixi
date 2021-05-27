@@ -4,23 +4,6 @@
 
 import { Scene, Btn, scaler, Camera, utils } from './../jixi.js';
 
-let fontMapping; // Lookup PSD font to get pixi (css) font family list 
-let googleFontFamilies;
-
-function registerFonts(fonts){
-  
-  fontMapping = {};
-  googleFontFamilies = [];
-  for (const fontID in fonts){    
-    if (!fontMapping[fonts[fontID].psdFontName]){
-      const fontFamily = utils.getFontFamilyFromGoogleFontURL(fonts[fontID].fontURL);         
-      googleFontFamilies.push(fontFamily);
-      fontMapping[fonts[fontID].psdFontName] = [fontFamily].concat(fonts[fontID].fallbacks);        
-    }
-  }
-  
-}
-
 // Index textures
 
 let psdInfo;
@@ -52,7 +35,6 @@ function registerPsdInfo(_psdInfo){
       txInfo[psdInfo[psdID].doc.name + '/' + psdInfo[psdID].doc.txs[i].name] = psdInfo[psdID].doc.txs[i]; // Allow texture look up (with `psdname.psd/` prefix)
     }
   }
-
 }
 
 let totLoadsComplete = 0;
@@ -72,24 +54,8 @@ export function loadAssets(_loadAssetCallback){
   
   // 1) Load Google web fonts     
   
-  if (googleFontFamilies && googleFontFamilies.length > 0){
+  if (queueWebFonts()){
     initialLoadItemCount++;
-    
-    // https://github.com/typekit/webfontloader
-    WebFont.load({
-        google: {
-            families: googleFontFamilies
-        },
-        loading: function() { 
-        },
-        active: function() { 
-          onLoadComplete(); 
-        },
-        inactive: function() { 
-          onLoadComplete(); // Failed load will fallback
-        } 
-    });
-    
   }
   
   // 2) Load all images
@@ -120,7 +86,7 @@ function onLoadComplete(){
   }
 }
 
-PIXI.DisplayObject.fromTx = function(txPath){
+PIXI.DisplayObject.fromTx = function(txPath, addChildren = true){
   
   if (!txInfo[txPath]){
     throw new Error('Texture info not found `'+txPath+'`')
@@ -138,16 +104,23 @@ PIXI.DisplayObject.fromTx = function(txPath){
     
   } else if (this == Text){
     
+    let font = fonts[fontClassForPsdFont[txInfo[txPath].tfParams.font]]
+    let fontFamilyList = [font.googleFontName].concat(font.fallbacks)
+    
+    // https://pixijs.download/dev/docs/PIXI.TextStyle.html
+      
+    let fontStyle = psdFontStyleComponents(txInfo[txPath].tfParams.fontStyle);
+      
     dispo = new Text(txInfo[txPath].tfParams.text, {
-      fontFamily: fontMapping[txInfo[txPath].tfParams.font],
+      fontFamily: fontFamilyList,
       fontSize: txInfo[txPath].tfParams.fontSize * scaler.proj[txInfo[txPath].projID].scale, // Apply projection scale to font size
       fill: txInfo[txPath].tfParams.color,
-      fontWeight: utils.fontWeightStrToNum(txInfo[txPath].tfParams.fontStyle),
-      align: txInfo[txPath].tfParams.align // Only affects multi-line fields, use reg to control alignment
+      fontWeight: fontStyle.weight,
+      align: txInfo[txPath].tfParams.align, // Only affects multi-line fields, use reg to control alignment
+      fontStyle: fontStyle.style
     });
   
-    
-  } else  if (this == Sprite || this.prototype instanceof Sprite){ // Custom Sprite class
+  } else if (this == Sprite || this.prototype instanceof Sprite){ // Custom Sprite class
     
     if (!resources[txPath]){
       throw new Error('Sprite texture not found `'+txPath+'`')
@@ -169,8 +142,10 @@ PIXI.DisplayObject.fromTx = function(txPath){
 
   dispo.applyProj();
   
-  // Add children
-  dispo.addArt();
+  if (addChildren){
+    // Add children
+    dispo.addArt();
+  }
   
   // If `setup` function exists then call now after applying projection and adding children
   if (typeof dispo.init === 'function'){
@@ -443,8 +418,6 @@ PIXI.DisplayObject.prototype.addArt = function(txNameGlob){
             
             this.addChild(dispo);
             
-            //console.log('- Added `'+txs[i].name+'`')
-            
             this.art[txs[i].name] = dispo;
             addedTx[txs[i].name] = txs[i];
             
@@ -522,7 +495,6 @@ PIXI.DisplayObject.prototype.hug = function(hugStr, hugBounds = null){
     }
   }
   
-  
   if (hugAlign.y !== null){
     if (hugAlign.y == -1){
       const paddingTopY = retainLayoutPadding ? paddingScale * (this.txInfo.y - this.txInfo.regPercY*this.txInfo.height) : 0.0;
@@ -538,4 +510,161 @@ PIXI.DisplayObject.prototype.hug = function(hugStr, hugBounds = null){
 } 
 
 
-export { txInfo,registerFonts,registerPsdInfo } // Temporary?
+// Webfonts
+// --------
+
+// See: https://developers.google.com/fonts/docs/getting_started#Syntax
+
+// Maps PSD font family names to google fonts, with fallbacks
+let fonts; 
+/*
+Example:
+let fonts = {
+  standard: {psdFontNames: ['Montserrat'], googleFontName: 'Montserrat', additionalStyles:['bold italic'], fallbacks:['serif']}
+};
+*/
+let fontClassForPsdFont; 
+
+export function registerFonts(_fonts){
+  
+  fonts = _fonts;  
+  
+}
+
+function getfontClassForPsdFont(psdFontName){
+  
+  const _psdFontName = psdFontName.trim().toLowerCase()
+  
+  if (fonts){
+    for (let className in fonts){
+      if (fonts[className].psdFontNames){
+        for (let psdFontName of fonts[className].psdFontNames){
+          if (psdFontName.trim().toLowerCase() == _psdFontName){
+            return className;
+          }
+        }
+      }
+    }
+  }
+  
+  // Attempt to autoload the font from the PSD 
+  // by assuming the font name from the PSD matches the Google font name
+  
+  if (!fonts){
+    fonts = {};
+  }
+  let className = '_auto_'+String(Math.round(100000 + Math.random()*99999))
+  fonts[className] = {psdFontNames: [psdFontName], googleFontName:psdFontName , fallbacks:['sans-serif']};
+  return className;
+    
+  // return psdFontName; 
+  
+}
+
+// Returns the font style: eigther 'normal','italic','oblique'
+function psdFontStyleComponents(psdFontStyle){
+  
+  psdFontStyle = psdFontStyle.trim().toLowerCase();
+  let parts = psdFontStyle.split(' ');
+  let style = (parts[parts.length-1] == 'italic' || parts[parts.length-1] == 'oblique') ? parts[parts.length-1] : 'normal';  
+  let weight = utils.fontWeightStrToNum(parts[0]); // Will default to 400
+  
+  return {style:style, weight:weight}
+  
+}
+
+function queueWebFonts(){
+  
+  // Find all non-duplicate font family and styles to load via the webfont API
+  
+  let googleFonts = {}; // A store of all required google font families, weights & styles
+  fontClassForPsdFont = {};
+  let classAdditionalsQueued = {};
+  
+  for (let txPath in txInfo){
+    if (txInfo[txPath].type == 'tf'){
+      
+      let fontStyle = psdFontStyleComponents(txInfo[txPath].tfParams.fontStyle)
+      
+      let psdFontName = txInfo[txPath].tfParams.fontName;
+      let psdFont = txInfo[txPath].tfParams.font; // %name%-%weight%%style%
+      
+      let fontClass = getfontClassForPsdFont(psdFontName);
+      
+      fontClassForPsdFont[psdFont] = fontClass; // Add this to a lookup for this specific font / style / weight combo
+      
+      let googleFontName = fonts[fontClass].googleFontName;
+      
+      if (!googleFonts[googleFontName]){
+        googleFonts[googleFontName] = {weights:{normal:[],italic:[],oblique:[]}};
+      }
+      
+      if (!googleFonts[googleFontName].weights[fontStyle.style].includes(fontStyle.weight)){
+        googleFonts[googleFontName].weights[fontStyle.style].push(fontStyle.weight);
+      }
+      
+      // Also include additional requested font styles 
+      
+      if (classAdditionalsQueued[fontClass] !== true && fonts[fontClass].additionalStyles){
+        for (let psdFontStyle of fonts[fontClass].additionalStyles){
+          fontStyle = psdFontStyleComponents(psdFontStyle)
+          if (!googleFonts[googleFontName].weights[fontStyle.style].includes(fontStyle.weight)){
+            googleFonts[googleFontName].weights[fontStyle.style].push(fontStyle.weight);
+          }
+        }       
+        classAdditionalsQueued[fontClass] = true;
+      }
+      
+    }
+  }
+  
+  // Create a list of Google Font identifiers to load
+  
+  let webfontIDs = [];
+  for (let googleFontName in googleFonts){
+   
+    let webFontStyles = [];
+    for (let style in googleFonts[googleFontName].weights){
+       googleFonts[googleFontName].weights[style].sort();
+       for (let weight of googleFonts[googleFontName].weights[style]){
+         // Eg. 'Montserrat:100italic,400,600,900oblique'
+         // see: https://github.com/typekit/webfontloader/issues/433
+         webFontStyles.push(String(weight) + (style == 'normal' ? '' : style));
+       }
+    }
+    webfontIDs.push(googleFontName + ':' + webFontStyles.join(','));
+    
+  }
+  
+  if (webfontIDs.length > 0){
+    
+    // https://github.com/typekit/webfontloader
+    WebFont.load({
+        google: {
+          families: webfontIDs,
+          // text: 'Q' // Optionally define text subset
+        },
+        loading: function() { 
+        },
+        active: function() { 
+          console.log('Loaded fonts: `'+webfontIDs.join('`,`')+'`')
+          onLoadComplete(); 
+        },
+        inactive: function() { 
+          console.log('Failed to load fonts: `'+webfontIDs.join('`,`')+'`')
+          onLoadComplete(); // Failed load will fallback
+        }
+    });
+    
+    return true; // Indicates items need to load
+    
+  }
+  
+  return false; // Nothing to load
+  
+}
+
+
+
+
+export { txInfo,registerPsdInfo } // Temporary?

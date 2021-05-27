@@ -14,7 +14,7 @@ btnClasses.default = {
       color: 0x00203a,
       alpha: 1.0
     },
-    bevel: 14.0
+    bevel: 0.0
   },
   tfParams: {
     color: 0xffffff

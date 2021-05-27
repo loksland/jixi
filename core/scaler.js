@@ -1,5 +1,6 @@
 
 import { pixiApp, utils, nav } from './../jixi.js';
+import fscreen from 'fscreen';
 
 let proj; // Artboard projections 
 
@@ -37,12 +38,13 @@ export function configureArtboard(_artboardDims, _artboardScaleFactor, _artboard
   }
 }
 
+//let htmlEle;
 function setup(){ // Called once on init for now
-  
+
   // Points to pixel conversion factors
-  
   initResizeListener();
   onResizeThrottled();
+  initFullScreenListener();
   
 }
 
@@ -230,7 +232,62 @@ function on(eventName, listener, context){
 }
 
 function off(eventName, listener, context){
-  return emitter.off(type, listener, context);
+  return emitter.off(eventName, listener, context);
 }
 
-export { setup, proj, stageW, stageH, on, off, resizeThrottleDelay, scaleFactor, uiScaleFactor }
+// Fullscreen 
+// ----------
+
+function initFullScreenListener(){
+  if (!supportsFullScreen()){
+    return;
+  }
+  fscreen.addEventListener('fullscreenchange', onFullscreenChange);
+}
+
+function onFullscreenChange(){
+  emitter.emit('fullscreenchange', isFullScreen());
+}
+
+function supportsFullScreen(){
+  return fscreen.fullscreenEnabled;
+}
+
+function isFullScreen(){
+  return supportsFullScreen() && Boolean(fscreen.fullscreenElement);
+}
+
+function toggleFullScreen(ele = null, forceState = null){
+  
+  if (!supportsFullScreen()){
+    return;
+  }
+  
+  if (typeof ele == 'string'){ 
+    if (ele == 'cv'){ // Canvas shorthand
+      ele = pixiApp.view;
+    } else {
+      ele = utils.e(ele.split('#').join('')); // Id is assumed if string
+    } 
+  } 
+  
+  if (!ele){
+    ele = document.body.parentNode; // html * as default
+  }
+
+  let isFS = isFullScreen();
+  let state = (forceState === true || forceState === false) ? forceState : !isFS;
+  if (state == isFS || !ele){
+    return;
+  }
+  
+  if (state){
+    fscreen.requestFullscreen(ele)
+  } else {
+    fscreen.exitFullscreen();
+  }
+  
+}
+
+export {toggleFullScreen, isFullScreen, supportsFullScreen}
+export {setup, proj, stageW, stageH, on, off, resizeThrottleDelay, scaleFactor, uiScaleFactor }

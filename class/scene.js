@@ -34,6 +34,8 @@ export default class Scene extends PIXI.Container {
     this.bgScreen.height = scaler.stageH;
     this.addChild(this.bgScreen);
     
+    
+    
   }
   
   ready(){

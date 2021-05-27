@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/loksland/jixi#readme",
   "dependencies": {
+    "fscreen": "^1.2.0",
     "object-assign-deep": "^0.4.0"
   }
 }

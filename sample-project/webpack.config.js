@@ -35,14 +35,21 @@ var common = {
  
 if(TARGET === 'start:dev') {
   
+  // https://webpack.js.org/configuration/dev-server/
   module.exports = merge(common, {
     devServer: {
       contentBase: path.resolve(__dirname, 'bin'),
       publicPath: '/js/',
       host: '0.0.0.0',
       port: '8080',
-      open: true
-    },
+      open: true,
+      watchContentBase: true, // Update bundle on *any* file change, not just js
+      watchOptions: {
+        ignored: [
+          path.resolve(__dirname, 'bin','img')
+        ]
+      }
+    }, 
     devtool: 'inline-source-map',
     /*
     module: {

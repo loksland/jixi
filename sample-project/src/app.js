@@ -1,13 +1,16 @@
-
-const { createApp, utils, scaler, nav, ui, Btn } = require(`jixi`);
+const { createApp, utils, scaler, nav, ui, Btn } = require('/Users/maker/Dropbox/Projects/jixi/jixi.js'); // require(`jixi`);
 
 // Nav
 
-import Test from './scenes/test.js';
+import Home from './scenes/home.js';
+import Popup from './scenes/popup.js';
+import Cam from './scenes/cam.js';
 
 const scenes = {
   
-  test: {class: Test, sceneData: {}, default:true}, //, default:true
+  home: {class: Home, sceneData: {}, default:true}, //, default:true
+  popup: {class: Popup, sceneData: {}}, //, default:true
+  cam: {class: Cam, sceneData: {}}, //, default:true
 
 }
 
@@ -17,7 +20,9 @@ nav.setScenes(scenes);
 
 ui.registerPsdInfo(utils.requireAll(require.context('./ui', false, /.json$/)))
 
-let fonts = {}
+let fonts = {
+  standard: {psdFontNames: ['Montserrat'], googleFontName: 'Montserrat', additionalStyles:['700 italic'], fallbacks:['serif']}
+};
 ui.registerFonts(fonts);
 
 // Scaler
@@ -53,16 +58,18 @@ Btn.registerClass('red', {
       color: 0xff3300,
       alpha: 1.0
     },
-    bevel: 5.0
+    bevel: 3.0
   },
   tfParams: {
     color: 0x000000
   }
 });
 
+Btn.setBtnTintOn(0xcccccc)
+
 // Kick off
 
-createApp(utils.e('game'), true, 1.0, ()=>{  
+createApp(utils.e('game'), true, 1.0, 0x00481e, ()=>{  
   TweenMax.to(utils.e('spinner'), 0.4, {alpha:0.0, ease:Linear.easeNone, onComplete:function(){
     utils.e('spinner').remove();
   }});

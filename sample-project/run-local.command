@@ -1,17 +1,19 @@
 #!/bin/bash
 
 cd "`dirname "$0"`"
-cd "app"
 
-#npm run dev
-#npm run build
 
+# Kill existing processes
 lsof -t -i tcp:8080 | xargs kill
 
-
+# Output local IP
 localIP=$(ipconfig getifaddr en0)
+
+echo ""
 echo "Access on network at: http://${localIP}:8080"
 
-npm run start:dev
+# Run Sass & webpack dev server concurrently
+
+sass --watch scss:bin/css & npm run start:dev
 
 $SHELL

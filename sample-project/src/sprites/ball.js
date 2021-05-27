@@ -1,11 +1,10 @@
-const { utils, scaler } = require(`jixi`);
+const { utils, scaler } = require('/Users/maker/Dropbox/Projects/jixi/jixi.js'); // require(`jixi`);
 
 export default class Ball extends PIXI.Sprite {
   
   constructor(tx){   
      
     super(tx);
-    
     
   }
   
@@ -19,8 +18,8 @@ export default class Ball extends PIXI.Sprite {
     this.x = scaler.stageW*Math.random()
     this.y = scaler.stageH*Math.random()
     
-    this.speedX = 100*Math.random()-50;
-    this.speedY = 100*Math.random()-50;
+    this.speedX = 10*Math.random()-5;
+    this.speedY = 10*Math.random()-5;
     
   }
   
@@ -34,35 +33,34 @@ export default class Ball extends PIXI.Sprite {
     let bouncedX = false;
     let bouncedY = false;
         
-    if (this.x > scaler.stageW){
+    if (this.x > scaler.stageW - this.width*0.5){
+      this.x = scaler.stageW - this.width*0.5
       this.speedX = -1 * this.speedX
       this.tint = Math.random()*0xffffff
       bouncedX = true;
     }
   
-    if (this.x < 0){
+    if (this.x < this.width*0.5){
+      this.x = this.width*0.5
       this.speedX = -1 * this.speedX
       this.tint = Math.random()*0xffffff
       bouncedX = true;
     }
     
-    if (this.y > scaler.stageH){
+    if (this.y > scaler.stageH - this.height*0.5){
+      this.y = scaler.stageH - this.height*0.5
       this.speedY = -1 * this.speedY
       this.tint = Math.random()*0xffffff
       bouncedY = true;
     }
   
-    if (this.y < 0){
+    if (this.y < this.height*0.5){
+      this.y = this.height*0.5
       this.speedY = -1 * this.speedY
       this.tint = Math.random()*0xffffff
       bouncedY = true;
     }
     
-    if (bouncedX && bouncedY){
-      this.speedX = 0.0;
-      this.speedY = 0.0;
-      this.tint = 0xffffff
-    }
     
   }
     
@@ -71,9 +69,8 @@ export default class Ball extends PIXI.Sprite {
   // --------
   
   dispose(){
-      
+
     this.off('removed',  this.dispose);
-    this._healthbar = null;
     
   }
   
