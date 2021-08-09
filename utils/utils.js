@@ -441,6 +441,8 @@ export function intersectRayRay(a1, a2, b1, b2) {
 };
 
 
+
+
 export function intersectSegmentBox(l1, l2, xb, yb, wb, hb) {
   
   return intersectSegmentSegment(l1.x, l1.y, l2.x, l2.y, xb, yb, xb, yb + hb) || 
@@ -522,6 +524,13 @@ export function getIntersectionPointsBetweenTwoCircles(pt_circle0_pos, int_circl
 
 	}
 };
+
+
+export function ellipsePerimeter(radX, radY){
+   
+  return 2.0 * 3.14 * Math.sqrt((radX * radX + radY * radY) / (2.0 * 1.0));
+  
+}
 
 // Usage: const _psdInfo = requireAll(require.context('./../../app/ui', false, /.json$/));
 export function requireAll( requireContext ) {
